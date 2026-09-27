@@ -5,7 +5,6 @@ deployment link:https://heart-disease-detectection-using-machine-4rp6.onrender.c
 
 A machine learning project that predicts the presence of heart disease from patient clinical features. The project includes a complete ML preprocessing pipeline, multiple classification algorithms, model evaluation, hyperparameter tuning, and a Flask-based web application for real-time prediction.
 
-> **⚕️ Disclaimer:** This project is intended for educational and demonstration purposes only. It is not a medical diagnostic system and should not be used as a substitute for professional medical advice.
 
 ---
 
