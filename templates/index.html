@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CardioCheck — Patient Screening Chart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:      #f5f8f6;
+    --panel:      #ffffff;
+    --ink:        #12241f;
+    --ink-soft:   #51655e;
+    --teal:       #12564f;
+    --teal-deep:  #0a332e;
+    --teal-tint:  #e4efeb;
+    --alert:      #a83c2c;
+    --alert-tint: #f7e9e5;
+    --safe:       #2b7a4f;
+    --safe-tint:  #e6f2ea;
+    --line:       #d7e0db;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:  'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    background: var(--teal-deep);
+    color: #f2f7f5;
+    padding: 48px 24px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pulse-wrap {
+    max-width: 760px;
+    margin: 0 auto 28px;
+    height: 64px;
+  }
+
+  .pulse-wrap svg { width: 100%; height: 100%; display: block; }
+
+  .pulse-path {
+    fill: none;
+    stroke: #6fcdb8;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 620;
+    stroke-dashoffset: 620;
+    animation: draw-pulse 2.4s ease-out forwards;
+  }
+  @keyframes draw-pulse {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: #9cc9bd;
+    letter-spacing: 0.02em;
+    margin: 0 0 10px;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 16px;
+    max-width: 14ch;
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: #c9ded7;
+    max-width: 52ch;
+    margin: 0;
+  }
+
+  /* ---------- Layout ---------- */
+
+  .page {
+    max-width: 760px;
+    margin: -22px auto 0;
+    padding: 0 24px 80px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  .panel-head {
+    padding: 26px 32px 4px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .panel-head h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .panel-head .note {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  form { padding: 6px 32px 32px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    gap: 8px 28px;
+    align-items: center;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .row:last-of-type { border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+
+  @media (max-width: 560px) {
+    .row { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  .row label {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .row .field-hint {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  .field-control { display: flex; flex-direction: column; }
+
+  .slider-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    appearance: none;
+    height: 3px;
+    background: var(--line);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2px solid var(--panel);
+    box-shadow: 0 0 0 1px var(--teal);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2px solid var(--panel);
+    box-shadow: 0 0 0 1px var(--teal);
+    cursor: pointer;
+  }
+
+  input[type="number"] {
+    width: 88px;
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--teal-deep);
+    background: var(--teal-tint);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 7px 8px;
+    text-align: right;
+  }
+
+  select {
+    font-family: var(--sans);
+    font-size: 0.94rem;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 9px 12px;
+    max-width: 320px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button.run-btn {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.96rem;
+    color: #f2f7f5;
+    background: var(--teal);
+    border: none;
+    padding: 13px 30px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button.run-btn:hover { background: var(--teal-deep); }
+
+  /* ---------- Result ---------- */
+
+  .result {
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    border: 1px solid var(--line);
+  }
+  .result.safe { background: var(--safe-tint); border-color: #bfe0cc; }
+  .result.danger { background: var(--alert-tint); border-color: #e6c2b8; }
+
+  .result-mark {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+  }
+
+  .result-word {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.9rem;
+    margin: 2px 0 6px;
+    line-height: 1;
+  }
+  .result.safe .result-word { color: var(--safe); }
+  .result.danger .result-word { color: var(--alert); }
+
+  .result-detail {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    max-width: 46ch;
+  }
+
+  .result-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Footer ---------- */
+
+  .foot {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+  .foot .disclaimer {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    line-height: 1.6;
+  }
+  .foot .credit {
+    margin-top: 22px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .foot .credit strong { color: var(--teal-deep); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="pulse-wrap">
+    <svg viewBox="0 0 760 64" preserveAspectRatio="none">
+      <path class="pulse-path" d="M0,32 L140,32 L165,32 L180,8 L200,58 L218,20 L232,32 L260,32 L300,32 L318,14 L336,32 L360,32 L760,32" />
+    </svg>
+  </div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">cardiocheck / screening chart</p>
+    <h1>Read the signs before they become symptoms.</h1>
+    <p>Enter a patient's clinical readings and a Gaussian Naive Bayes model, trained on the UCI heart disease dataset, will screen the profile for signs of cardiac risk.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Patient chart</h2>
+      <span class="note">7 clinical fields</span>
+    </div>
+
+    <form method="POST" action="/">
+
+      <div class="row">
+        <label for="age">Age</label>
+        <div class="field-control">
+          <div class="slider-line">
+            <input type="range" id="age_range" min="{{ numeric_fields.age.min }}" max="{{ numeric_fields.age.max }}" step="{{ numeric_fields.age.step }}"
+                   value="{{ form_values.age or 45 }}"
+                   oninput="document.getElementById('age').value=this.value">
+            <input type="number" name="age" id="age" min="{{ numeric_fields.age.min }}" max="{{ numeric_fields.age.max }}" step="{{ numeric_fields.age.step }}"
+                   value="{{ form_values.age or 45 }}" required
+                   oninput="document.getElementById('age_range').value=this.value">
+          </div>
+          <span class="field-hint">years · typical range 29–77</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="sex">Sex</label>
+        <div class="field-control">
+          <select name="sex" id="sex" required>
+            {% for value, label in sex_options %}
+              <option value="{{ value }}" {% if form_values.sex|string == value|string %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="cp">Chest pain type</label>
+        <div class="field-control">
+          <select name="cp" id="cp" required>
+            {% for value, label in cp_options %}
+              <option value="{{ value }}" {% if form_values.cp|string == value|string %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <span class="field-hint">nature of chest pain on presentation</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="thalach">Max heart rate achieved</label>
+        <div class="field-control">
+          <div class="slider-line">
+            <input type="range" id="thalach_range" min="{{ numeric_fields.thalach.min }}" max="{{ numeric_fields.thalach.max }}" step="{{ numeric_fields.thalach.step }}"
+                   value="{{ form_values.thalach or 150 }}"
+                   oninput="document.getElementById('thalach').value=this.value">
+            <input type="number" name="thalach" id="thalach" min="{{ numeric_fields.thalach.min }}" max="{{ numeric_fields.thalach.max }}" step="{{ numeric_fields.thalach.step }}"
+                   value="{{ form_values.thalach or 150 }}" required
+                   oninput="document.getElementById('thalach_range').value=this.value">
+          </div>
+          <span class="field-hint">bpm · typical range 71–202</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="oldpeak">ST depression (oldpeak)</label>
+        <div class="field-control">
+          <div class="slider-line">
+            <input type="range" id="oldpeak_range" min="{{ numeric_fields.oldpeak.min }}" max="{{ numeric_fields.oldpeak.max }}" step="{{ numeric_fields.oldpeak.step }}"
+                   value="{{ form_values.oldpeak or 1.0 }}"
+                   oninput="document.getElementById('oldpeak').value=this.value">
+            <input type="number" name="oldpeak" id="oldpeak" min="{{ numeric_fields.oldpeak.min }}" max="{{ numeric_fields.oldpeak.max }}" step="{{ numeric_fields.oldpeak.step }}"
+                   value="{{ form_values.oldpeak or 1.0 }}" required
+                   oninput="document.getElementById('oldpeak_range').value=this.value">
+          </div>
+          <span class="field-hint">induced by exercise, relative to rest</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="slope">ST segment slope</label>
+        <div class="field-control">
+          <select name="slope" id="slope" required>
+            {% for value, label in slope_options %}
+              <option value="{{ value }}" {% if form_values.slope|string == value|string %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <span class="field-hint">shape at peak exercise</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="thal">Thalassemia</label>
+        <div class="field-control">
+          <select name="thal" id="thal" required>
+            {% for value, label in thal_options %}
+              <option value="{{ value }}" {% if form_values.thal|string == value|string %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <span class="field-hint">blood disorder test result</span>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="run-btn">Run screening</button>
+      </div>
+    </form>
+  </div>
+
+  {% if result %}
+  <div class="result {{ result_class }}">
+    {% if result_class == 'safe' %}
+    <svg class="result-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="22" fill="#2b7a4f" fill-opacity="0.14"/>
+      <path d="M14 25l7 7 13-15" stroke="#2b7a4f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    {% else %}
+    <svg class="result-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="22" fill="#a83c2c" fill-opacity="0.14"/>
+      <path d="M24 14v14M24 33v1" stroke="#a83c2c" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    {% endif %}
+    <div>
+      <p class="result-mark">screening result</p>
+      <p class="result-word">{{ result }}</p>
+      <p class="result-detail">
+        {% if result_class == 'safe' %}
+          This profile does not show the patterns the model associates with cardiac risk.
+        {% else %}
+          This profile matches patterns the model associates with cardiac risk. Recommend follow-up with a cardiologist.
+        {% endif %}
+        {% if confidence %} Model confidence: {{ confidence }}%.{% endif %}
+      </p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="foot">
+  <p class="disclaimer">CardioCheck is a demo screening tool built on a Gaussian Naive Bayes model trained on the UCI Heart Disease dataset. It does not provide medical advice, diagnosis, or treatment — always consult a qualified healthcare professional for medical concerns.</p>
+  <p class="credit">Developed by <strong>Sagar Datti</strong></p>
+</div>
+
+</body>
+</html>
